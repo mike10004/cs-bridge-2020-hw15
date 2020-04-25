@@ -39,3 +39,5 @@ order in the form of:
     Daniel Katz, $270
     John F. Jones, $210
     *********End payroll**************
+
+(Question text copyright belongs to the professor)
