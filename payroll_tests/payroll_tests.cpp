@@ -13,17 +13,6 @@
 #include <unistd.h>
 #include <climits>
 
-TEST_CASE( "Raise", "What goes here I do not know" ) {
-    std::cout << "this test gonna run" << std::endl;
-    REQUIRE(Raise(3, 1) == 3);
-    REQUIRE(Raise(2, 2) == 4);
-    REQUIRE(Raise(10, 2) == 100);
-    REQUIRE(Raise(10, 0) == 1);
-    REQUIRE(Raise(5, 3) == 125);
-    std::cout << "this test ran" << std::endl;
-}
-
-
 
 void TestPreciseDecimal() {
     using namespace std;
@@ -115,23 +104,23 @@ void TestEmployee() {
 void TestReadTimesheetData() {
     using namespace std;
     vector<pair<string, vector<IntPair>>> test_cases({
-                                                             pair<string, vector<IntPair>>("", {}),
-                                                             pair<string, vector<IntPair>>("1 2", {IntPair(1, 2)}),
-                                                             pair<string, vector<IntPair>>("1 2\n", {IntPair(1, 2)}),
-                                                             pair<string, vector<IntPair>>("1 2\n3 4", {IntPair(1, 2), IntPair(3, 4)}),
-                                                             pair<string, vector<IntPair>>("1 2\n3 4\n", {IntPair(1, 2), IntPair(3, 4)}),
-                                                             pair<string, vector<IntPair>>(R"(1 2
+         pair<string, vector<IntPair>>("", {}),
+         pair<string, vector<IntPair>>("1 2", {IntPair(1, 2)}),
+         pair<string, vector<IntPair>>("1 2\n", {IntPair(1, 2)}),
+         pair<string, vector<IntPair>>("1 2\n3 4", {IntPair(1, 2), IntPair(3, 4)}),
+         pair<string, vector<IntPair>>("1 2\n3 4\n", {IntPair(1, 2), IntPair(3, 4)}),
+         pair<string, vector<IntPair>>(R"(1 2
 3 4
 5 8
 1 16
 3 32
 )", {
-                                                                     IntPair(1, 2),
-                                                                     IntPair(3, 4),
-                                                                     IntPair(5, 8),
-                                                                     IntPair(1, 16),
-                                                                     IntPair(3, 32),
-                                                             })});
+         IntPair(1, 2),
+         IntPair(3, 4),
+         IntPair(5, 8),
+         IntPair(1, 16),
+         IntPair(3, 32),
+    })});
     for (const pair<string, vector<IntPair>>& test_case : test_cases) {
         const std::string& content = test_case.first;
         istringstream in(content);
@@ -141,3 +130,19 @@ void TestReadTimesheetData() {
         assert(expected == actual);
     }
 }
+
+TEST_CASE( "Raise", "What goes here I do not know" ) {
+    std::cout << "this test gonna run" << std::endl;
+    REQUIRE(Raise(3, 1) == 3);
+    REQUIRE(Raise(2, 2) == 4);
+    REQUIRE(Raise(10, 2) == 100);
+    REQUIRE(Raise(10, 0) == 1);
+    REQUIRE(Raise(5, 3) == 125);
+    TestReadTimesheetData();
+    TestEmployee();
+    TestReadEmployeeData();
+    TestPreciseDecimal();
+    std::cout << "this test ran" << std::endl;
+}
+
+
