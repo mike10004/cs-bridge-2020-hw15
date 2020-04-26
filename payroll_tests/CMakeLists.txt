@@ -1,0 +1,2 @@
+add_executable(payroll_tests payroll_tests.cpp)
+target_link_libraries(payroll_tests payroll)

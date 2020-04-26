@@ -1,10 +1,8 @@
 #define CATCH_CONFIG_MAIN
 
 #include <catch.hpp>
-#include "../gumby/gumby.h"
+#include "../payroll/payroll.h"
 #include <iostream>
-
-using namespace gumby;
 
 TEST_CASE( "Raise", "What goes here I do not know" ) {
     REQUIRE(Raise(3, 1) == 3);

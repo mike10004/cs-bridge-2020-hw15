@@ -10,9 +10,7 @@
 #include <algorithm>
 #include <unistd.h>
 #include <climits>
-#include "../gumby/gumby.h"
-
-using namespace gumby;
+#include "../payroll/payroll.h"
 
 const char POINT = '.';
 const int MONEY_PRECISION = 2;
