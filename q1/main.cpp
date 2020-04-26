@@ -236,8 +236,12 @@ void ReadTimesheetData(std::istream& in, std::vector<IntPair>& entries) {
     while (in) {
         int employee_id;
         int hours_worked;
-        in >> employee_id >> hours_worked;
-        entries.emplace_back(IntPair(employee_id, hours_worked));
+        in >> employee_id;
+        if (in) {
+            in >> hours_worked;
+            entries.emplace_back(IntPair(employee_id, hours_worked));
+        }
+        in.ignore(INT_MAX, '\n');
     }
 }
 
@@ -376,7 +380,6 @@ void TestReadEmployeeData() {
 )");
     EmployeeList employees;
     ReadEmployeeInfo(emp_input, employees);
-    assert(3 == employees.size());
     list<Employee> expected1({
             Employee(9, "Jonas Salk", PreciseDecimal::Money(3, 50)),
             Employee(17, "Abraham P. Lincoln", PreciseDecimal::Money(6, 0)),
@@ -414,7 +417,7 @@ void TestReadTimesheetData() {
             pair<string, vector<IntPair>>("1 2", {IntPair(1, 2)}),
             pair<string, vector<IntPair>>("1 2\n", {IntPair(1, 2)}),
             pair<string, vector<IntPair>>("1 2\n3 4", {IntPair(1, 2), IntPair(3, 4)}),
-            pair<string, vector<IntPair>>("1 2\n", {IntPair(1, 2), IntPair(3, 4)}),
+            pair<string, vector<IntPair>>("1 2\n3 4\n", {IntPair(1, 2), IntPair(3, 4)}),
             pair<string, vector<IntPair>>(R"(1 2
 3 4
 5 8
@@ -428,7 +431,8 @@ void TestReadTimesheetData() {
                     IntPair(3, 32),
             })});
     for (const pair<string, vector<IntPair>>& test_case : test_cases) {
-        istringstream in(test_case.first);
+        const std::string& content = test_case.first;
+        istringstream in(content);
         const vector<IntPair>& expected = test_case.second;
         vector<IntPair> actual;
         ReadTimesheetData(in, actual);
