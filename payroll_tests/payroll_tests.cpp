@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 
 #include <catch.hpp>
-#include "../payroll/payroll.h"
+#include "../q1/payroll.h"
 #include <iostream>
 #include <iostream>
 #include <fstream>
@@ -14,11 +14,13 @@
 #include <climits>
 
 TEST_CASE( "Raise", "What goes here I do not know" ) {
+    std::cout << "this test gonna run" << std::endl;
     REQUIRE(Raise(3, 1) == 3);
     REQUIRE(Raise(2, 2) == 4);
     REQUIRE(Raise(10, 2) == 100);
     REQUIRE(Raise(10, 0) == 1);
     REQUIRE(Raise(5, 3) == 125);
+    std::cout << "this test ran" << std::endl;
 }
 
 

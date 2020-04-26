@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <unistd.h>
 #include <climits>
-#include "../payroll/payroll.h"
+#include "payroll.h"
 
 // stage: cut start
 std::string get_working_path()
