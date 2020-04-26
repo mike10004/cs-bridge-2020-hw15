@@ -5,4 +5,4 @@ project(q1)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Werror")
 
-add_executable(q1 ../gumby/gumby.h ../gumby/gumby.cpp main.cpp)
+add_executable(q1 ../payroll/payroll.h ../payroll/payroll.cpp main.cpp)
