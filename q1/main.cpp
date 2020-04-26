@@ -358,19 +358,34 @@ void TestRaise() {
 
 void TestReadEmployeeData() {
     using namespace std;
-    istringstream input(R"(9 3.50 Jonas Salk
+    istringstream emp_input(R"(9 3.50 Jonas Salk
 17 6.00 Abraham P. Lincoln
 2 50.99 Madonna
 )");
     EmployeeList employees;
-    ReadEmployeeInfo(input, employees);
+    ReadEmployeeInfo(emp_input, employees);
     assert(3 == employees.size());
-    list<Employee> expected({
+    list<Employee> expected1({
             Employee(9, "Jonas Salk", PreciseDecimal::Money(3, 50)),
             Employee(17, "Abraham P. Lincoln", PreciseDecimal::Money(6, 0)),
             Employee(2, "Madonna", PreciseDecimal::Money(50, 99)),
     });
-    assert(employees == expected);
+    assert(employees == expected1);
+    istringstream hours_input(R"(17 40
+9 10
+9 20
+2 1
+17 40
+9 10
+17 5
+)");
+    ReadTimesheetData(hours_input, employees);
+    vector<Employee> expected2(expected1.begin(), expected1.end());
+    expected2[0].AddHoursWorked(10 + 20 + 10);
+    expected2[1].AddHoursWorked(40 + 40 + 5);
+    expected2[2].AddHoursWorked(1);
+    EmployeeList expected2l(expected2.begin(), expected2.end());
+    assert(employees == expected2l);
 }
 
 void TestEmployee() {
