@@ -230,11 +230,23 @@ Employee* FindEmployeeById(EmployeeList& employeeList, int id) {
     return nullptr;
 }
 
-void ReadTimesheetData(std::istream& in, EmployeeList& employee_list) {
+typedef std::pair<int, int> IntPair;
+
+void ReadTimesheetData(std::istream& in, std::vector<IntPair>& entries) {
     while (in) {
         int employee_id;
         int hours_worked;
         in >> employee_id >> hours_worked;
+        entries.emplace_back(IntPair(employee_id, hours_worked));
+    }
+}
+
+void ReadTimesheetData(std::istream& in, EmployeeList& employee_list) {
+    std::vector<IntPair> entries;
+    ReadTimesheetData(in, entries);
+    for (const IntPair& entry : entries) {
+        int employee_id = entry.first;
+        int hours_worked = entry.second;
         Employee* employee = FindEmployeeById(employee_list, employee_id);
         if (employee != nullptr) {
             employee->AddHoursWorked(hours_worked);
@@ -395,9 +407,39 @@ void TestEmployee() {
     assert(1575 == emp.ComputePay().GetNormalizedValue());
 }
 
+void TestReadTimesheetData() {
+    using namespace std;
+    vector<pair<string, vector<IntPair>>> test_cases({
+            pair<string, vector<IntPair>>("", {}),
+            pair<string, vector<IntPair>>("1 2", {IntPair(1, 2)}),
+            pair<string, vector<IntPair>>("1 2\n", {IntPair(1, 2)}),
+            pair<string, vector<IntPair>>("1 2\n3 4", {IntPair(1, 2), IntPair(3, 4)}),
+            pair<string, vector<IntPair>>("1 2\n", {IntPair(1, 2), IntPair(3, 4)}),
+            pair<string, vector<IntPair>>(R"(1 2
+3 4
+5 8
+1 16
+3 32
+)", {
+                    IntPair(1, 2),
+                    IntPair(3, 4),
+                    IntPair(5, 8),
+                    IntPair(1, 16),
+                    IntPair(3, 32),
+            })});
+    for (const pair<string, vector<IntPair>>& test_case : test_cases) {
+        istringstream in(test_case.first);
+        const vector<IntPair>& expected = test_case.second;
+        vector<IntPair> actual;
+        ReadTimesheetData(in, actual);
+        assert(expected == actual);
+    }
+}
+
 int main(int argc, char* argv[]) {
     TestRaise();
     TestPreciseDecimal();
+    TestReadTimesheetData();
     TestReadEmployeeData();
     TestEmployee();
     EmployeeList employee_list;
