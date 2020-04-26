@@ -18,12 +18,15 @@ const int BASE = 10;
 class PreciseDecimal {
 public:
     explicit PreciseDecimal(int precision);
+    PreciseDecimal(const PreciseDecimal& other);
     friend std::ostream& operator<<(std::ostream& out, const PreciseDecimal& value);
     friend std::istream& operator>>(std::istream& in, PreciseDecimal& value);
     void SetNormalizedValue(long normalized_value);
     void SetSeparatedValue(long pre_separator, long post_separator);
     long GetNormalizedValue() const;
     long modulus() const;
+    void Assign(const PreciseDecimal& other);
+    PreciseDecimal& operator=(const PreciseDecimal& other);
     bool Equals(const PreciseDecimal& other) const {
         return precision_ == other.precision_ && normalized_value_ == other.normalized_value_;
     }
@@ -103,19 +106,36 @@ long PreciseDecimal::modulus() const {
     return Raise(BASE, precision_);
 }
 
+void PreciseDecimal::Assign(const PreciseDecimal &other) {
+    normalized_value_ = other.normalized_value_;
+}
+
+PreciseDecimal &PreciseDecimal::operator=(const PreciseDecimal &other) {
+    Assign(other);
+    return *this;
+}
+
+PreciseDecimal::PreciseDecimal(const PreciseDecimal &other)
+    : precision_(other.precision_), normalized_value_(other.normalized_value_)
+{
+}
+
 class Employee {
 public:
     Employee(int id, const std::string& name, const PreciseDecimal& salary_dollars_per_hour);
+    Employee(const Employee& other);
     int GetId() const;
     std::string GetName() const;
     PreciseDecimal ComputePay() const;
     void AddHoursWorked(int hours);
     bool Equals(const Employee& other) const;
     bool operator==(const Employee& other) const;
+    void Assign(const Employee& other);
+    Employee& operator=(const Employee& other);
 private:
-    const int id_;
-    const std::string name_;
-    const PreciseDecimal salary_dollars_per_hour_;
+    int id_;
+    std::string name_;
+    PreciseDecimal salary_dollars_per_hour_;
     int hours_worked_;
 };
 
@@ -160,6 +180,20 @@ bool Employee::Equals(const Employee &other) const {
 bool Employee::operator==(const Employee &other) const {
     return Equals(other);
 }
+
+void Employee::Assign(const Employee &other) {
+    id_ = other.id_;
+    name_ = other.name_;
+    salary_dollars_per_hour_ = other.salary_dollars_per_hour_;
+    hours_worked_ = other.hours_worked_;
+}
+
+Employee& Employee::operator=(const Employee &other) {
+    Assign(other);
+    return *this;
+}
+
+Employee::Employee(const Employee &other) = default;
 
 //template<class T>
 //struct LinkedListNode {
@@ -270,43 +304,19 @@ void ReadTimesheetData(const std::string& pathname, EmployeeList& employee_list)
     infile.close();
 }
 
-void SortEmployeesByPay(EmployeeList& employee_list) {
-
-}
-
-template<class F, class T>
-class Function
+struct EmployeePayComparator
 {
-public:
-    Function();
-    virtual ~Function() = default;
-    virtual T Apply(const F& item) const = 0;
-};
-
-template<class F, class T>
-Function<F, T>::Function() = default;
-
-template<class T>
-void ApplyToAll(EmployeeList& employee_list, const Function<Employee, T>& action) {
-    for (const Employee& employee : employee_list) {
-        action.Apply(employee);
+    bool operator ()(const Employee & emp1, const Employee & emp2)
+    {
+        // higher pay goes first
+        return emp1.ComputePay().GetNormalizedValue() > emp2.ComputePay().GetNormalizedValue();
     }
-}
-
-class PrintFunction : public Function<Employee, void>
-{
-public:
-    explicit PrintFunction(std::ostream& out);
-    void Apply(const Employee& employee) const override;
-private:
-    std::ostream& out_;
 };
 
-PrintFunction::PrintFunction(std::ostream& out) : out_(out) {
-}
-
-void PrintFunction::Apply(const Employee &employee) const {
-    out_ << employee.GetName() << ", $" << employee.ComputePay() << std::endl;
+std::vector<Employee> SortEmployeesByPay(EmployeeList& employee_list) {
+    std::vector<Employee> list_copy(employee_list.begin(), employee_list.end());
+    std::sort(list_copy.begin(), list_copy.end(), EmployeePayComparator());
+    return list_copy;
 }
 
 std::string get_working_path()
@@ -462,9 +472,11 @@ int main(int argc, char* argv[]) {
     }
     ReadEmployeeInfo(employee_info_pathname, employee_list);
     ReadTimesheetData(hours_worked_pathname, employee_list);
-    SortEmployeesByPay(employee_list);
+    std::vector<Employee> sorted = SortEmployeesByPay(employee_list);
     std::cout << "*********Payroll Information********" << std::endl;
-    ApplyToAll(employee_list, PrintFunction(std::cout));
+    for (const Employee& employee : sorted) {
+        std::cout << employee.GetName() << ", $" << employee.ComputePay() << std::endl;
+    }
     std::cout << "*********End payroll**************" << std::endl;
     return 0;
 }
