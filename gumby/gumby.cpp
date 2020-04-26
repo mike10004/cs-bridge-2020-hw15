@@ -1,5 +1,9 @@
 #include "gumby.h"
 
-int gumby::foo(int bar) {
-    return bar * bar;
+long gumby::Raise(int base, int exponent) {
+    long product = 1;
+    for (int i = 0; i < exponent; i++) {
+        product *= base;
+    }
+    return product;
 }

@@ -10,6 +10,9 @@
 #include <algorithm>
 #include <unistd.h>
 #include <climits>
+#include "../gumby/gumby.h"
+
+using namespace gumby;
 
 const char POINT = '.';
 const int MONEY_PRECISION = 2;
@@ -43,14 +46,6 @@ protected:
 private:
     const int precision_;
 };
-
-long Raise(int base, int exponent) {
-    long product = 1;
-    for (int i = 0; i < exponent; i++) {
-        product *= base;
-    }
-    return product;
-}
 
 std::ostream& operator<<(std::ostream& out, const PreciseDecimal& value) {
     long modulus = value.modulus();
@@ -194,28 +189,6 @@ Employee& Employee::operator=(const Employee &other) {
 }
 
 Employee::Employee(const Employee &other) = default;
-
-//template<class T>
-//struct LinkedListNode {
-//
-//};
-
-//template<class T>
-//class DoublyLinkedList {
-//public:
-//    DoublyLinkedList();
-//    virtual ~DoublyLinkedList();
-//    void push_front(const T& item);
-//    void push_back(const T& item);
-//    T pop_front();
-//    T pop_bak();
-//    bool empty();
-//    size_t size();
-//private:
-//    LinkedListNode<T>* head_;
-//    LinkedListNode<T>* tail_;
-//    size_t count_;
-//};
 
 typedef std::list<Employee> EmployeeList;
 
@@ -374,14 +347,6 @@ void TestPreciseDecimal() {
     }
 }
 
-void TestRaise() {
-    assert(Raise(3, 1) == 3);
-    assert(Raise(2, 2) == 4);
-    assert(Raise(10, 2) == 100);
-    assert(Raise(10, 0) == 1);
-    assert(Raise(5, 3) == 125);
-}
-
 void TestReadEmployeeData() {
     using namespace std;
     istringstream emp_input(R"(9 3.50 Jonas Salk
@@ -451,7 +416,6 @@ void TestReadTimesheetData() {
 }
 
 int main(int argc, char* argv[]) {
-    TestRaise();
     TestPreciseDecimal();
     TestReadTimesheetData();
     TestReadEmployeeData();
