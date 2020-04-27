@@ -2,7 +2,6 @@
 #define HW15_LINKEDLIST_H
 
 #include <vector>
-#include <list>
 
 template<class T>
 class Predicate
@@ -27,18 +26,20 @@ public:
     ~DoublyLinkedList();
     void PushFront(const T& item);
     void PushBack(const T& item);
-    T pop_front();
-    T pop_back();
+    T GetFront();
+    T GetBack();
+    bool PopBack();
+    bool PopFront();
     bool IsEmpty();
     size_t Count();
     T* FindElement(const Predicate<T>&);
     std::vector<T> CopyToVector();
     bool operator==(const std::vector<T> vector);
 private:
+    DoublyLinkedList(const DoublyLinkedList<T>& other); // make private to prevent copying
     LinkedListNode<T>* head_;
     LinkedListNode<T>* tail_;
     size_t count_;
-    std::list<T> list_;
 };
 
 
@@ -49,18 +50,20 @@ template<class T>
 Predicate<T>::~Predicate() = default;
 
 template<class T>
-void DoublyLinkedList<T>::PushBack(const T &item) {
-    list_.push_back(item);
-}
-
-template<class T>
 bool DoublyLinkedList<T>::IsEmpty() {
-    return list_.empty();
+    return Count() == 0;
 }
 
 template<class T>
 std::vector<T> DoublyLinkedList<T>::CopyToVector() {
-    return std::vector<T>(list_.begin(), list_.end());
+    std::vector<T> items;
+    items.reserve(Count());
+    LinkedListNode<T>* current = head_;
+    while (current != nullptr) {
+        items.push_back(current->content);
+        current = current->next;
+    }
+    return items;
 }
 
 template<class T>
@@ -70,33 +73,84 @@ DoublyLinkedList<T>::DoublyLinkedList() : head_(nullptr), tail_(nullptr), count_
 
 template<class T>
 T* DoublyLinkedList<T>::FindElement(const Predicate<T>& predicate) {
-    for (T& element : list_) {
-        if (predicate.Evaluate(element)) {
-            return &element;
+    LinkedListNode<T>* current = head_;
+    while (current != nullptr) {
+        if (predicate.Evaluate(current->content)) {
+            return &(current->content);
         }
+        current = head_->next;
     }
     return nullptr;
 }
 
 template<class T>
 bool DoublyLinkedList<T>::operator==(const std::vector<T> vector) {
-    std::vector<T> me(list_.begin(), list_.end());
-    return me == vector;
+    // TODO impl
 }
 
 template<class T>
 size_t DoublyLinkedList<T>::Count() {
-    return list_.size();
+    return count_;
+}
+
+template<class T>
+void DoublyLinkedList<T>::PushBack(const T &item) {
+    // TODO impl
 }
 
 template<class T>
 void DoublyLinkedList<T>::PushFront(const T &item) {
-    list_.push_front(item);
+    // TODO impl
 }
 
 template<class T>
-DoublyLinkedList<T>::~DoublyLinkedList() = default;
+T DoublyLinkedList<T>::GetBack() {
+    if (IsEmpty()) {
+        return T();
+    }
+    return tail_->content;
+}
 
+template<class T>
+DoublyLinkedList<T>::~DoublyLinkedList() {
+    while (!IsEmpty()) {
+        PopBack();
+    }
+}
+
+template<class T>
+T DoublyLinkedList<T>::GetFront() {
+    if (IsEmpty()) {
+        return T();
+    }
+    return head_->content;
+}
+
+template<class T>
+bool DoublyLinkedList<T>::PopBack() {
+    if (IsEmpty()) {
+        return false;
+    }
+    LinkedListNode<T>* tail = tail_;
+    LinkedListNode<T>* head = head_;
+    if (Count() == 1) {
+        delete head;
+        head_ = nullptr;
+        tail_ = nullptr;
+        count_--;
+        return true;
+    }
+    // TODO handle n > 1 case
+}
+
+template<class T>
+bool DoublyLinkedList<T>::PopFront() {
+    if (IsEmpty()) {
+        return false;
+    }
+    // TODO handle n == 1 case
+    // TODO handle n > 1 case
+}
 
 
 #endif //HW15_LINKEDLIST_H
