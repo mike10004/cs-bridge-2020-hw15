@@ -1,12 +1,7 @@
 #include "payroll.h"
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <vector>
-#include <cassert>
-#include <list>
 #include <algorithm>
-#include <unistd.h>
 #include <climits>
 
 long Raise(int base, int exponent) {
@@ -16,7 +11,6 @@ long Raise(int base, int exponent) {
     }
     return product;
 }
-
 
 std::ostream& operator<<(std::ostream& out, const PreciseDecimal& value) {
     long modulus = value.modulus();
@@ -81,13 +75,16 @@ PreciseDecimal &PreciseDecimal::operator=(const PreciseDecimal &other) {
     return *this;
 }
 
+#pragma clang diagnostic push                                   // stage: cut
+#pragma ide diagnostic ignored "modernize-use-equals-default"   // stage: cut
 PreciseDecimal::PreciseDecimal(const PreciseDecimal &other)
         : precision_(other.precision_), normalized_value_(other.normalized_value_)
 {
 }
+#pragma clang diagnostic pop                                    // stage: cut
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "modernize-pass-by-value"
+#pragma clang diagnostic push                               // stage: cut
+#pragma ide diagnostic ignored "modernize-pass-by-value"    // stage: cut
 Employee::Employee(int id, const std::string &name, const PreciseDecimal &salary_dollars_per_hour)
         : id_(id),
           name_(name),
@@ -96,7 +93,7 @@ Employee::Employee(int id, const std::string &name, const PreciseDecimal &salary
 {
 
 }
-#pragma clang diagnostic pop
+#pragma clang diagnostic pop                                // stage: cut
 
 int Employee::GetId() const {
     return id_;
@@ -179,7 +176,7 @@ void ReadEmployeeInfo(const std::string& pathname, EmployeeList& employee_list) 
 }
 
 Employee* FindEmployeeById(EmployeeList& employeeList, int id) {
-    for (Employee& employee : employeeList) {
+    for (Employee& employee : employeeList.ToVector()) {
         if (employee.GetId() == id) {
             return &employee;
         }
@@ -232,7 +229,7 @@ bool EmployeePayComparator::operator ()(const Employee & emp1, const Employee & 
 }
 
 std::vector<Employee> SortEmployeesByPay(EmployeeList& employee_list) {
-    std::vector<Employee> list_copy(employee_list.begin(), employee_list.end());
+    std::vector<Employee> list_copy = employee_list.ToVector();
     std::sort(list_copy.begin(), list_copy.end(), EmployeePayComparator());
     return list_copy;
 }

@@ -13,6 +13,10 @@
 #include <unistd.h>
 #include <climits>
 
+const char POINT = '.';
+const int MONEY_PRECISION = 2;
+const int BASE = 10;
+
 long Raise(int base, int exponent);
 
 template<class T>
@@ -39,10 +43,6 @@ private:
     LinkedListNode<T>* tail_;
     size_t count_;
 };
-
-const char POINT = '.';
-const int MONEY_PRECISION = 2;
-const int BASE = 10;
 
 class PreciseDecimal {
 public:
@@ -92,7 +92,7 @@ private:
     int hours_worked_;
 };
 
-typedef std::list<Employee> EmployeeList;
+typedef DoublyLinkedList<Employee> EmployeeList;
 
 void ReadEmployeeInfo(std::istream& in, EmployeeList& employee_list);
 void ReadEmployeeInfo(const std::string& pathname, EmployeeList& employee_list);

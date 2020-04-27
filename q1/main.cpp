@@ -2,18 +2,13 @@
 // hw15
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <vector>
-#include <cassert>
-#include <list>
-#include <algorithm>
-#include <unistd.h>
+#include <unistd.h> // stage: cut
 #include <climits>
 #include "payroll.h"
 
 // stage: cut start
-std::string get_working_path()
+std::string get_working_path()  // from somewhere on stackoverflow
 {
     char temp[PATH_MAX];
     return ( getcwd(temp, sizeof(temp)) ? std::string( temp ) : std::string("") );
