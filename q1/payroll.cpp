@@ -239,7 +239,7 @@ struct EmployeePayComparator
 
 
 std::vector<Employee> SortEmployeesByPay(EmployeeList& employee_list) {
-    std::vector<Employee> list_copy = employee_list.MakeVectorCopy();
+    std::vector<Employee> list_copy = employee_list.CopyToVector();
     std::sort(list_copy.begin(), list_copy.end(), EmployeePayComparator());
     return list_copy;
 }
