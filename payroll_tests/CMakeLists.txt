@@ -1,8 +1,10 @@
 add_executable(payroll_tests
+        ../q1/linkedlist.h
         ../q1/payroll.h
         ../q1/payroll.cpp
+        DoublyLinkedList_tests.cpp
         Employee_tests.cpp
         PreciseDecimal_tests.cpp
         ReadFunctions_tests.cpp
         payroll_tests.cpp
-)
+        ../q1/linkedlist.h)

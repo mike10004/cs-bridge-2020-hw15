@@ -12,49 +12,13 @@
 #include <algorithm>
 #include <unistd.h>
 #include <climits>
+#include "linkedlist.h"
 
 const char POINT = '.';
 const int MONEY_PRECISION = 2;
 const int BASE = 10;
 
 long Raise(int base, int exponent);
-
-template<class T>
-struct LinkedListNode {
-    LinkedListNode<T>* next;
-    LinkedListNode<T>* prev;
-    T content;
-};
-
-template<class T>
-class Predicate
-{
-public:
-    Predicate();
-    virtual ~Predicate();
-    virtual bool Evaluate(const T& item) const = 0;
-};
-
-template<class T>
-class DoublyLinkedList {
-public:
-    DoublyLinkedList();
-    ~DoublyLinkedList();
-    void push_front(const T& item);
-    void push_back(const T& item);
-    T pop_front();
-    T pop_back();
-    bool empty();
-    size_t size();
-    T* FindElement(const Predicate<T>&);
-    std::vector<T> MakeVectorCopy();
-    bool operator==(const std::vector<T> vector);
-private:
-    LinkedListNode<T>* head_;
-    LinkedListNode<T>* tail_;
-    size_t count_;
-    std::list<T> list_;
-};
 
 class PreciseDecimal {
 public:
@@ -115,13 +79,6 @@ void ReadTimesheetData(std::istream& in, std::vector<IntPair>& entries);
 void ReadTimesheetData(std::istream& in, EmployeeList& employee_list);
 void ReadTimesheetData(const std::string& pathname, EmployeeList& employee_list);
 
-struct EmployeePayComparator
-{
-    bool operator ()(const Employee & emp1, const Employee & emp2);
-};
-
 std::vector<Employee> SortEmployeesByPay(EmployeeList& employee_list);
-
-template class DoublyLinkedList<Employee>;
 
 #endif //HW15_PAYROLL_H
