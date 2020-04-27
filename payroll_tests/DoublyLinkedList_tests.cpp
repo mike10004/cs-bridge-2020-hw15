@@ -14,11 +14,11 @@ public:
 
 TEST_CASE("DoublyLinkedList_push_back") {
     DoublyLinkedList<int> list;
-    REQUIRE(list.empty());
-    list.push_back(3);
-    REQUIRE_FALSE(list.empty());
-    REQUIRE(list.size() == 1);
-    list.push_back(8);
+    REQUIRE(list.IsEmpty());
+    list.PushBack(3);
+    REQUIRE_FALSE(list.IsEmpty());
+    REQUIRE(list.Count() == 1);
+    list.PushBack(8);
     std::vector<int> items({3, 8});
     REQUIRE(items == list.CopyToVector());
     int* el_ptr = list.FindElement(EqualsPredicate(8));
@@ -26,7 +26,7 @@ TEST_CASE("DoublyLinkedList_push_back") {
     REQUIRE(*el_ptr == 8);
     int* not_found = list.FindElement(EqualsPredicate(5));
     REQUIRE(not_found == nullptr);
-    list.push_front(5);
+    list.PushFront(5);
     items = {5, 3, 8};
     REQUIRE(items == list.CopyToVector());
 }

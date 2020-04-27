@@ -25,12 +25,12 @@ class DoublyLinkedList {
 public:
     DoublyLinkedList();
     ~DoublyLinkedList();
-    void push_front(const T& item);
-    void push_back(const T& item);
+    void PushFront(const T& item);
+    void PushBack(const T& item);
     T pop_front();
     T pop_back();
-    bool empty();
-    size_t size();
+    bool IsEmpty();
+    size_t Count();
     T* FindElement(const Predicate<T>&);
     std::vector<T> CopyToVector();
     bool operator==(const std::vector<T> vector);
@@ -49,12 +49,12 @@ template<class T>
 Predicate<T>::~Predicate() = default;
 
 template<class T>
-void DoublyLinkedList<T>::push_back(const T &item) {
+void DoublyLinkedList<T>::PushBack(const T &item) {
     list_.push_back(item);
 }
 
 template<class T>
-bool DoublyLinkedList<T>::empty() {
+bool DoublyLinkedList<T>::IsEmpty() {
     return list_.empty();
 }
 
@@ -85,12 +85,12 @@ bool DoublyLinkedList<T>::operator==(const std::vector<T> vector) {
 }
 
 template<class T>
-size_t DoublyLinkedList<T>::size() {
+size_t DoublyLinkedList<T>::Count() {
     return list_.size();
 }
 
 template<class T>
-void DoublyLinkedList<T>::push_front(const T &item) {
+void DoublyLinkedList<T>::PushFront(const T &item) {
     list_.push_front(item);
 }
 

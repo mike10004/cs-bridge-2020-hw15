@@ -158,7 +158,7 @@ void ReadEmployeeInfo(std::istream& in, EmployeeList& employee_list) {
             std::getline(in, name_remainder);
         }
         Employee employee(id, name_start + name_remainder, salary);
-        employee_list.push_back(employee);
+        employee_list.PushBack(employee);
     }
 }
 
@@ -170,7 +170,7 @@ void ReadEmployeeInfo(const std::string& pathname, EmployeeList& employee_list) 
         std::cerr << "error reading employee data from " << pathname << std::endl;
     }
     infile.close();
-    if (employee_list.empty()) {
+    if (employee_list.IsEmpty()) {
         std::cerr << "no employees to report on" << std::endl;
     }
 }
