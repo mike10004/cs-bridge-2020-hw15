@@ -175,13 +175,27 @@ void ReadEmployeeInfo(const std::string& pathname, EmployeeList& employee_list) 
     }
 }
 
-Employee* FindEmployeeById(EmployeeList& employeeList, int id) {
-    for (Employee& employee : employeeList.ToVector()) {
-        if (employee.GetId() == id) {
-            return &employee;
-        }
+
+template<class T>
+Predicate<T>::Predicate() = default;
+
+template<class T>
+Predicate<T>::~Predicate() = default;
+
+class EmployeeIdPredicate : public Predicate<Employee> {
+public:
+    explicit EmployeeIdPredicate(int id) :id_(id) {
     }
-    return nullptr;
+    bool Evaluate(const Employee& employee) const override {
+        return id_ == employee.GetId();
+    }
+private:
+    int id_;
+};
+
+Employee* FindEmployeeById(EmployeeList& employeeList, int id) {
+    EmployeeIdPredicate predicate(id);
+    return employeeList.FindElement(predicate);
 }
 
 void ReadTimesheetData(std::istream& in, std::vector<IntPair>& entries) {
@@ -229,8 +243,48 @@ bool EmployeePayComparator::operator ()(const Employee & emp1, const Employee & 
 }
 
 std::vector<Employee> SortEmployeesByPay(EmployeeList& employee_list) {
-    std::vector<Employee> list_copy = employee_list.ToVector();
+    std::vector<Employee> list_copy = employee_list.MakeVectorCopy();
     std::sort(list_copy.begin(), list_copy.end(), EmployeePayComparator());
     return list_copy;
 }
+
+
+template<class T>
+void DoublyLinkedList<T>::push_back(const T &item) {
+    list_.push_back(item);
+}
+
+template<class T>
+bool DoublyLinkedList<T>::empty() {
+    return list_.empty();
+}
+
+template<class T>
+std::vector<T> DoublyLinkedList<T>::MakeVectorCopy() {
+    return std::vector<T>(list_.begin(), list_.end());
+}
+
+template<class T>
+DoublyLinkedList<T>::DoublyLinkedList() : head_(nullptr), tail_(nullptr), count_(0) {
+
+}
+
+template<class T>
+T* DoublyLinkedList<T>::FindElement(const Predicate<T>& predicate) {
+    for (Employee& employee : list_) {
+        if (predicate.Evaluate(employee)) {
+            return &employee;
+        }
+    }
+    return nullptr;
+}
+
+template<class T>
+bool DoublyLinkedList<T>::operator==(const std::vector<T> vector) {
+    std::vector<T> me(list_.begin(), list_.end());
+    return me == vector;
+}
+
+template<class T>
+DoublyLinkedList<T>::~DoublyLinkedList() = default;
 

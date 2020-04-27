@@ -27,21 +27,33 @@ struct LinkedListNode {
 };
 
 template<class T>
+class Predicate
+{
+public:
+    Predicate();
+    virtual ~Predicate();
+    virtual bool Evaluate(const T& item) const = 0;
+};
+
+template<class T>
 class DoublyLinkedList {
 public:
     DoublyLinkedList();
-    virtual ~DoublyLinkedList();
+    ~DoublyLinkedList();
     void push_front(const T& item);
     void push_back(const T& item);
     T pop_front();
     T pop_back();
     bool empty();
     size_t size();
-    std::vector<T> ToVector();
+    T* FindElement(const Predicate<T>&);
+    std::vector<T> MakeVectorCopy();
+    bool operator==(const std::vector<T> vector);
 private:
     LinkedListNode<T>* head_;
     LinkedListNode<T>* tail_;
     size_t count_;
+    std::list<T> list_;
 };
 
 class PreciseDecimal {
@@ -109,5 +121,7 @@ struct EmployeePayComparator
 };
 
 std::vector<Employee> SortEmployeesByPay(EmployeeList& employee_list);
+
+template class DoublyLinkedList<Employee>;
 
 #endif //HW15_PAYROLL_H

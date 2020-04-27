@@ -16,7 +16,7 @@ std::string get_working_path()  // from somewhere on stackoverflow
 // stage: cut stop
 
 int main(int argc, char* argv[]) {
-    EmployeeList employee_list;
+    DoublyLinkedList<Employee> employee_list;
     std::string employee_info_pathname;
     std::string hours_worked_pathname;
 

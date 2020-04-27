@@ -1,17 +1,11 @@
 #define CATCH_CONFIG_MAIN
 
 #include <catch.hpp>
-#include "../q1/payroll.h"
 #include <iostream>
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <vector>
 #include <cassert>
 #include <list>
-#include <algorithm>
-#include <unistd.h>
-#include <climits>
+#include "../q1/payroll.h"
 
 
 void TestPreciseDecimal() {
@@ -71,7 +65,7 @@ void TestReadEmployeeData() {
 )");
     EmployeeList employees;
     ReadEmployeeInfo(emp_input, employees);
-    list<Employee> expected1({
+    vector<Employee> expected1({
                                      Employee(9, "Jonas Salk", PreciseDecimal::Money(3, 50)),
                                      Employee(17, "Abraham P. Lincoln", PreciseDecimal::Money(6, 0)),
                                      Employee(2, "Madonna", PreciseDecimal::Money(50, 99)),
@@ -90,8 +84,7 @@ void TestReadEmployeeData() {
     expected2[0].AddHoursWorked(10 + 20 + 10);
     expected2[1].AddHoursWorked(40 + 40 + 5);
     expected2[2].AddHoursWorked(1);
-    EmployeeList expected2l(expected2.begin(), expected2.end());
-    assert(employees == expected2l);
+    assert(employees == expected2);
 }
 
 void TestEmployee() {
