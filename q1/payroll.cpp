@@ -137,6 +137,10 @@ Employee& Employee::operator=(const Employee &other) {
     return *this;
 }
 
+bool Employee::operator!=(const Employee &other) const {
+    return !(*this == other);
+}
+
 Employee::Employee(const Employee &other) = default;
 
 void ReadEmployeeInfo(std::istream& in, EmployeeList& employee_list) {
@@ -239,8 +243,14 @@ struct EmployeePayComparator
 
 
 std::vector<Employee> SortEmployeesByPay(EmployeeList& employee_list) {
-    std::vector<Employee> list_copy = employee_list.CopyToVector();
-    std::sort(list_copy.begin(), list_copy.end(), EmployeePayComparator());
-    return list_copy;
+    EmployeeList list_copy(employee_list);
+    std::vector<Employee> employee_vector;
+    while (!list_copy.IsEmpty()) {
+        Employee employee = list_copy.GetFront();
+        list_copy.PopFront();
+        employee_vector.push_back(employee);
+    }
+    std::sort(employee_vector.begin(), employee_vector.end(), EmployeePayComparator());
+    return employee_vector;
 }
 

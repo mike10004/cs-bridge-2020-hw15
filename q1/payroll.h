@@ -59,6 +59,7 @@ public:
     void AddHoursWorked(int hours);
     bool Equals(const Employee& other) const;
     bool operator==(const Employee& other) const;
+    bool operator!=(const Employee& other) const;
     void Assign(const Employee& other);
     Employee& operator=(const Employee& other);
 private:
