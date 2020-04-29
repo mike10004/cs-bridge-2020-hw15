@@ -36,31 +36,31 @@ TEST_CASE("ReadEmployeeData", "basic") {
     REQUIRE(employees == expected2);
 }
 
-TEST_CASE("ReadTimesheetData", "basic") {
+TEST_CASE("ReadTimesheetData_TimesheetLine", "basic") {
     using namespace std;
-    vector<pair<string, vector<IntPair>>> test_cases({
-             pair<string, vector<IntPair>>("", {}),
-             pair<string, vector<IntPair>>("1 2", {IntPair(1, 2)}),
-             pair<string, vector<IntPair>>("1 2\n", {IntPair(1, 2)}),
-             pair<string, vector<IntPair>>("1 2\n3 4", {IntPair(1, 2), IntPair(3, 4)}),
-             pair<string, vector<IntPair>>("1 2\n3 4\n", {IntPair(1, 2), IntPair(3, 4)}),
-             pair<string, vector<IntPair>>(R"(1 2
+    vector<pair<string, vector<TimesheetLine>>> test_cases({
+             pair<string, vector<TimesheetLine>>("", {}),
+             pair<string, vector<TimesheetLine>>("1 2", {TimesheetLine(1, 2)}),
+             pair<string, vector<TimesheetLine>>("1 2\n", {TimesheetLine(1, 2)}),
+             pair<string, vector<TimesheetLine>>("1 2\n3 4", {TimesheetLine(1, 2), TimesheetLine(3, 4)}),
+             pair<string, vector<TimesheetLine>>("1 2\n3 4\n", {TimesheetLine(1, 2), TimesheetLine(3, 4)}),
+             pair<string, vector<TimesheetLine>>(R"(1 2
 3 4
 5 8
 1 16
 3 32
 )", {
-             IntPair(1, 2),
-             IntPair(3, 4),
-             IntPair(5, 8),
-             IntPair(1, 16),
-             IntPair(3, 32),
+             TimesheetLine(1, 2),
+             TimesheetLine(3, 4),
+             TimesheetLine(5, 8),
+             TimesheetLine(1, 16),
+             TimesheetLine(3, 32),
      })});
-    for (const pair<string, vector<IntPair>>& test_case : test_cases) {
+    for (const pair<string, vector<TimesheetLine>>& test_case : test_cases) {
         const std::string& content = test_case.first;
         istringstream in(content);
-        const vector<IntPair>& expected = test_case.second;
-        vector<IntPair> actual;
+        const vector<TimesheetLine>& expected = test_case.second;
+        vector<TimesheetLine> actual;
         ReadTimesheetData(in, actual);
         REQUIRE(expected == actual);
     }

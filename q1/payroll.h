@@ -29,20 +29,12 @@ public:
     void SetNormalizedValue(long normalized_value);
     void SetSeparatedValue(long pre_separator, long post_separator);
     long GetNormalizedValue() const;
-    long modulus() const;
+    long GetModulus() const;
     void Assign(const PreciseDecimal& other);
     PreciseDecimal& operator=(const PreciseDecimal& other);
-    bool Equals(const PreciseDecimal& other) const {
-        return precision_ == other.precision_ && normalized_value_ == other.normalized_value_;
-    }
-    bool operator==(const PreciseDecimal& other) const {
-        return Equals(other);
-    }
-    static PreciseDecimal Money(int dollars, int cents) {
-        PreciseDecimal p(MONEY_PRECISION);
-        p.SetSeparatedValue(dollars, cents);
-        return p;
-    }
+    bool Equals(const PreciseDecimal& other) const;
+    bool operator==(const PreciseDecimal& other) const;
+    static PreciseDecimal Money(int dollars, int cents);
 protected:
     long normalized_value_;
 private:
@@ -52,7 +44,6 @@ private:
 class Employee {
 public:
     Employee(int id, const std::string& name, const PreciseDecimal& salary_dollars_per_hour);
-    Employee(const Employee& other);
     int GetId() const;
     std::string GetName() const;
     PreciseDecimal ComputePay() const;
@@ -73,10 +64,16 @@ typedef DoublyLinkedList<Employee> EmployeeList;
 
 void ReadEmployeeInfo(std::istream& in, EmployeeList& employee_list);
 void ReadEmployeeInfo(const std::string& pathname, EmployeeList& employee_list);
-Employee* FindEmployeeById(EmployeeList& employeeList, int id);
-typedef std::pair<int, int> IntPair;
 
-void ReadTimesheetData(std::istream& in, std::vector<IntPair>& entries);
+struct TimesheetLine {
+    int employee_id;
+    int hours_worked;
+    TimesheetLine(int employee_id, int hours_worked);
+    bool operator==(const TimesheetLine& other) const;
+};
+
+Employee* FindEmployeeById(EmployeeList& employeeList, int id);
+void ReadTimesheetData(std::istream& in, std::vector<TimesheetLine>& entries);
 void ReadTimesheetData(std::istream& in, EmployeeList& employee_list);
 void ReadTimesheetData(const std::string& pathname, EmployeeList& employee_list);
 

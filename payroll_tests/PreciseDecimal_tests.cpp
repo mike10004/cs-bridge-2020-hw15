@@ -8,7 +8,7 @@
 
 TEST_CASE("PreciseDecimal_modulus", "") {
     PreciseDecimal p(MONEY_PRECISION);
-    REQUIRE(p.modulus() == 100);
+    REQUIRE(p.GetModulus() == 100);
 }
 
 TEST_CASE("PreciseDecimal_GetNormalizedValue1", "125") {

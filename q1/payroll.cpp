@@ -13,7 +13,7 @@ long Raise(int base, int exponent) {
 }
 
 std::ostream& operator<<(std::ostream& out, const PreciseDecimal& value) {
-    long modulus = value.modulus();
+    long modulus = value.GetModulus();
     long pre_point = value.normalized_value_ / modulus;
     long post_point = value.normalized_value_ % modulus;
     const char* post_prefix = post_point < 10 ? "0" : "";
@@ -53,7 +53,7 @@ void PreciseDecimal::SetNormalizedValue(long normalized_value) {
 }
 
 void PreciseDecimal::SetSeparatedValue(long pre_separator, long post_separator) {
-    long modulus_ = modulus();
+    long modulus_ = GetModulus();
     long normalized_value = pre_separator * modulus_ + post_separator;
     SetNormalizedValue(normalized_value);
 }
@@ -62,7 +62,7 @@ long PreciseDecimal::GetNormalizedValue() const {
     return normalized_value_;
 }
 
-long PreciseDecimal::modulus() const {
+long PreciseDecimal::GetModulus() const {
     return Raise(BASE, precision_);
 }
 
@@ -81,6 +81,21 @@ PreciseDecimal::PreciseDecimal(const PreciseDecimal &other)
         : precision_(other.precision_), normalized_value_(other.normalized_value_)
 {
 }
+
+bool PreciseDecimal::Equals(const PreciseDecimal &other) const {
+    return precision_ == other.precision_ && normalized_value_ == other.normalized_value_;
+}
+
+bool PreciseDecimal::operator==(const PreciseDecimal &other) const {
+    return Equals(other);
+}
+
+PreciseDecimal PreciseDecimal::Money(int dollars, int cents) {
+    PreciseDecimal p(MONEY_PRECISION);
+    p.SetSeparatedValue(dollars, cents);
+    return p;
+}
+
 #pragma clang diagnostic pop                                    // stage: cut
 
 #pragma clang diagnostic push                               // stage: cut
@@ -141,8 +156,6 @@ bool Employee::operator!=(const Employee &other) const {
     return !(*this == other);
 }
 
-Employee::Employee(const Employee &other) = default;
-
 void ReadEmployeeInfo(std::istream& in, EmployeeList& employee_list) {
     while (in) {
         int id;
@@ -196,30 +209,28 @@ Employee* FindEmployeeById(EmployeeList& employeeList, int id) {
     return employeeList.FindElement(predicate);
 }
 
-void ReadTimesheetData(std::istream& in, std::vector<IntPair>& entries) {
+void ReadTimesheetData(std::istream& in, std::vector<TimesheetLine>& entries) {
     while (in) {
         int employee_id;
         int hours_worked;
         in >> employee_id;
         if (in) {
             in >> hours_worked;
-            entries.emplace_back(IntPair(employee_id, hours_worked));
+            entries.emplace_back(employee_id, hours_worked);
         }
         in.ignore(INT_MAX, '\n');
     }
 }
 
 void ReadTimesheetData(std::istream& in, EmployeeList& employee_list) {
-    std::vector<IntPair> entries;
+    std::vector<TimesheetLine> entries;
     ReadTimesheetData(in, entries);
-    for (const IntPair& entry : entries) {
-        int employee_id = entry.first;
-        int hours_worked = entry.second;
-        Employee* employee = FindEmployeeById(employee_list, employee_id);
+    for (const TimesheetLine& entry : entries) {
+        Employee* employee = FindEmployeeById(employee_list, entry.employee_id);
         if (employee != nullptr) {
-            employee->AddHoursWorked(hours_worked);
+            employee->AddHoursWorked(entry.hours_worked);
         } else {
-            std::cerr << "error: employee with id " << employee_id << " is not in the employee list" << std::endl;
+            std::cerr << "error: employee with id " << entry.employee_id << " is not in the employee list" << std::endl;
         }
     }
 }
@@ -252,5 +263,15 @@ std::vector<Employee> SortEmployeesByPay(EmployeeList& employee_list) {
     }
     std::sort(employee_vector.begin(), employee_vector.end(), EmployeePayComparator());
     return employee_vector;
+}
+
+TimesheetLine::TimesheetLine(int employee_id, int hours_worked)
+    : employee_id(employee_id), hours_worked(hours_worked)
+{
+
+}
+
+bool TimesheetLine::operator==(const TimesheetLine &other) const {
+    return employee_id == other.employee_id && hours_worked == other.hours_worked;
 }
 
