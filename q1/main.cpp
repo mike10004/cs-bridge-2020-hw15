@@ -1,5 +1,14 @@
 // mac937@nyu.edu
 // hw15
+//
+// A note about style: This code follows the Google C++ Style Guide (mostly),
+// which differs slightly from the class style guidelines, in that variable
+// names are in snake_case but function names are in SentenceCase. Private
+// member variables are in snake_case with a trailing underscore.
+//
+// This code deviates from the style guide by not defining class member
+// field accessor functions with snake_case names, but instead defines
+// accessor functions with names like GetX().
 
 #include <iostream>
 #include <vector>

@@ -74,11 +74,13 @@ bool PreciseDecimal::operator==(const PreciseDecimal &other) const {
     return Equals(other);
 }
 
+// stage: cut start
 PreciseDecimal PreciseDecimal::Money(int dollars, int cents) {
     PreciseDecimal p(MONEY_PRECISION);
     p.SetSeparatedValue(dollars, cents);
     return p;
 }
+// stage: cut stop
 
 #pragma clang diagnostic push                               // stage: cut
 #pragma ide diagnostic ignored "modernize-pass-by-value"    // stage: cut
