@@ -4,6 +4,11 @@
 #include <vector>
 #include <cassert>
 
+/**
+ * Abstract class that represents a predicate.
+ * This class is used to search for items in a linked list.
+ * @tparam T element type
+ */
 template<class T>
 class Predicate
 {
@@ -13,6 +18,10 @@ public:
     virtual bool Evaluate(const T& item) const = 0;
 };
 
+/**
+ * Struct that represents a doubly-linked list node.
+ * @tparam T content type
+ */
 template<class T>
 struct LinkedListNode {
     LinkedListNode<T>* next;
@@ -21,13 +30,12 @@ struct LinkedListNode {
     explicit LinkedListNode(const T& content);
 };
 
-template<class T>
-LinkedListNode<T>::LinkedListNode(const T &content)
-    : content(content), next(nullptr), prev(nullptr)
-{
-
-}
-
+/**
+ * Class that represents a doubly-linked list.
+ * The functions correspond to the similarly-named functions from
+ * the STL list class.
+ * @tparam T element type
+ */
 template<class T>
 class DoublyLinkedList {
 public:
@@ -36,14 +44,30 @@ public:
     DoublyLinkedList(const DoublyLinkedList<T>& other);
     void PushFront(const T& item);
     void PushBack(const T& item);
+    /**
+     * Gets the first element in the list.
+     * If the list is empty, this will cause the program to abort.
+     * @return copy of first element
+     */
     T GetFront() const;
+    /**
+     * Gets the last element of the list.
+     * If the list is empty, this will cause the program to abort.
+     * @return copy of last element
+     */
     T GetBack() const;
     bool PopBack();
     bool PopFront();
     bool IsEmpty() const;
     size_t Count() const;
     void Clear();
-    T* FindElement(const Predicate<T>&) const;
+
+    /**
+     * Gets a pointer to the first element in the list that satisfies a predicate.
+     * @param predicate
+     * @return pointer to satisfying element, or nullptr if no elements satisfy the predicate
+     */
+    T* FindElement(const Predicate<T>& predicate) const;
     DoublyLinkedList<T>& operator=(const DoublyLinkedList<T>& other);
     bool operator==(const DoublyLinkedList<T>& other) const;
     template<class U>
@@ -55,6 +79,12 @@ private:
     void Assign(const DoublyLinkedList<T>& other);
     void Check();
 };
+
+template<class T>
+LinkedListNode<T>::LinkedListNode(const T &content)
+        : content(content), next(nullptr), prev(nullptr)
+{
+}
 
 template<class T>
 bool operator==(const DoublyLinkedList<T>& list, const std::vector<T>& vector) {
