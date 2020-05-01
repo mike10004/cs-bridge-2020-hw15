@@ -34,9 +34,12 @@ int main(int argc, char* argv[]) {
     std::cin >> hours_worked_pathname;
     } // stage: cut
 
-    ReadEmployeeInfo(employee_info_pathname, employee_list);
-    ReadTimesheetData(hours_worked_pathname, employee_list);
-    std::vector<Employee> sorted = SortEmployeesByPay(employee_list);
+    Bookkeeper bookkeeper;
+    bookkeeper.ReadEmployeeInfo(employee_info_pathname, employee_list);
+    std::vector<TimesheetLine> timesheet_entries;
+    bookkeeper.ReadTimesheetData(hours_worked_pathname, timesheet_entries);
+    bookkeeper.UpdateEmployees(timesheet_entries, employee_list);
+    std::vector<Employee> sorted = bookkeeper.SortEmployeesByPay(employee_list);
     std::cout << "*********Payroll Information********" << std::endl;
     for (const Employee& employee : sorted) {
         std::cout << employee.GetName() << ", $" << employee.ComputePay() << std::endl;

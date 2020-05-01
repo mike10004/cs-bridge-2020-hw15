@@ -44,6 +44,7 @@ public:
     size_t Count() const;
     void Clear();
     T* FindElement(const Predicate<T>&) const;
+    DoublyLinkedList<T>& operator=(const DoublyLinkedList<T>& other);
     bool operator==(const DoublyLinkedList<T>& other) const;
     template<class U>
     friend bool operator==(const DoublyLinkedList<U>& list, const std::vector<U>& vector);
@@ -52,7 +53,6 @@ private:
     LinkedListNode<T>* tail_;
     size_t count_;
     void Assign(const DoublyLinkedList<T>& other);
-    DoublyLinkedList<T>& operator=(const DoublyLinkedList<T>& other); // prohibit assignment operator
     void Check();
 };
 
@@ -261,6 +261,13 @@ void DoublyLinkedList<T>::Check() {
     }
     assert(backward_count == count_);
     // stage: cut stop
+}
+
+template<class T>
+DoublyLinkedList<T> &DoublyLinkedList<T>::operator=(const DoublyLinkedList<T> &other) {
+    if (this != &other) {
+        Assign(other);
+    }
 }
 
 #endif //HW15_LINKEDLIST_H

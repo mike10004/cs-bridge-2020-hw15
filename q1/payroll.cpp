@@ -66,22 +66,6 @@ long PreciseDecimal::GetModulus() const {
     return Raise(BASE, precision_);
 }
 
-void PreciseDecimal::Assign(const PreciseDecimal &other) {
-    normalized_value_ = other.normalized_value_;
-}
-
-PreciseDecimal &PreciseDecimal::operator=(const PreciseDecimal &other) {
-    Assign(other);
-    return *this;
-}
-
-#pragma clang diagnostic push                                   // stage: cut
-#pragma ide diagnostic ignored "modernize-use-equals-default"   // stage: cut
-PreciseDecimal::PreciseDecimal(const PreciseDecimal &other)
-        : precision_(other.precision_), normalized_value_(other.normalized_value_)
-{
-}
-
 bool PreciseDecimal::Equals(const PreciseDecimal &other) const {
     return precision_ == other.precision_ && normalized_value_ == other.normalized_value_;
 }
@@ -95,8 +79,6 @@ PreciseDecimal PreciseDecimal::Money(int dollars, int cents) {
     p.SetSeparatedValue(dollars, cents);
     return p;
 }
-
-#pragma clang diagnostic pop                                    // stage: cut
 
 #pragma clang diagnostic push                               // stage: cut
 #pragma ide diagnostic ignored "modernize-pass-by-value"    // stage: cut
@@ -140,23 +122,13 @@ bool Employee::operator==(const Employee &other) const {
     return Equals(other);
 }
 
-void Employee::Assign(const Employee &other) {
-    id_ = other.id_;
-    name_ = other.name_;
-    salary_dollars_per_hour_ = other.salary_dollars_per_hour_;
-    hours_worked_ = other.hours_worked_;
-}
-
-Employee& Employee::operator=(const Employee &other) {
-    Assign(other);
-    return *this;
-}
-
 bool Employee::operator!=(const Employee &other) const {
     return !(*this == other);
 }
 
-void ReadEmployeeInfo(std::istream& in, EmployeeList& employee_list) {
+#pragma clang diagnostic push   // stage: cut
+#pragma ide diagnostic ignored "readability-convert-member-functions-to-static"  // stage: cut
+void Bookkeeper::ReadEmployeeInfo(std::istream& in, EmployeeList& employee_list) {
     while (in) {
         int id;
         std::string name_start;
@@ -179,7 +151,7 @@ void ReadEmployeeInfo(std::istream& in, EmployeeList& employee_list) {
     }
 }
 
-void ReadEmployeeInfo(const std::string& pathname, EmployeeList& employee_list) {
+void Bookkeeper::ReadEmployeeInfo(const std::string& pathname, EmployeeList& employee_list) {
     std::ifstream infile(pathname);
     if (infile) {
         ReadEmployeeInfo(infile, employee_list);
@@ -204,12 +176,12 @@ private:
     int id_;
 };
 
-Employee* FindEmployeeById(EmployeeList& employeeList, int id) {
+Employee* Bookkeeper::FindEmployeeById(EmployeeList& employeeList, int id) {
     EmployeeIdPredicate predicate(id);
     return employeeList.FindElement(predicate);
 }
 
-void ReadTimesheetData(std::istream& in, std::vector<TimesheetLine>& entries) {
+void Bookkeeper::ReadTimesheetData(std::istream& in, std::vector<TimesheetLine>& entries) {
     while (in) {
         int employee_id;
         int hours_worked;
@@ -222,9 +194,7 @@ void ReadTimesheetData(std::istream& in, std::vector<TimesheetLine>& entries) {
     }
 }
 
-void ReadTimesheetData(std::istream& in, EmployeeList& employee_list) {
-    std::vector<TimesheetLine> entries;
-    ReadTimesheetData(in, entries);
+void Bookkeeper::UpdateEmployees(const std::vector<TimesheetLine> &entries, EmployeeList &employee_list) {
     for (const TimesheetLine& entry : entries) {
         Employee* employee = FindEmployeeById(employee_list, entry.employee_id);
         if (employee != nullptr) {
@@ -235,10 +205,10 @@ void ReadTimesheetData(std::istream& in, EmployeeList& employee_list) {
     }
 }
 
-void ReadTimesheetData(const std::string& pathname, EmployeeList& employee_list) {
+void Bookkeeper::ReadTimesheetData(const std::string& pathname, std::vector<TimesheetLine>& entries) {
     std::ifstream infile(pathname);
     if (infile) {
-        ReadTimesheetData(infile, employee_list);
+        ReadTimesheetData(infile, entries);
     } else {
         std::cerr << "error reading timesheet data from " << pathname << std::endl;
     }
@@ -252,8 +222,7 @@ struct EmployeePayComparator
     }
 };
 
-
-std::vector<Employee> SortEmployeesByPay(EmployeeList& employee_list) {
+std::vector<Employee> Bookkeeper::SortEmployeesByPay(EmployeeList& employee_list) {
     EmployeeList list_copy(employee_list);
     std::vector<Employee> employee_vector;
     while (!list_copy.IsEmpty()) {
@@ -265,10 +234,17 @@ std::vector<Employee> SortEmployeesByPay(EmployeeList& employee_list) {
     return employee_vector;
 }
 
+#pragma clang diagnostic pop   // stage: cut
+
+#pragma clang diagnostic push // stage: cut
+#pragma ide diagnostic ignored "modernize-use-equals-default" // stage: cut
+Bookkeeper::Bookkeeper() {
+}
+#pragma clang diagnostic pop // stage: cut
+
 TimesheetLine::TimesheetLine(int employee_id, int hours_worked)
     : employee_id(employee_id), hours_worked(hours_worked)
 {
-
 }
 
 bool TimesheetLine::operator==(const TimesheetLine &other) const {

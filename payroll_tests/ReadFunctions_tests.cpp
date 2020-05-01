@@ -6,14 +6,15 @@
 #include "../q1/payroll.h"
 
 
-TEST_CASE("ReadEmployeeData", "basic") {
+TEST_CASE("BookkeeperTests_ReadEmployeeInfo") {
     using namespace std;
     istringstream emp_input(R"(9 3.50 Jonas Salk
 17 6.00 Abraham P. Lincoln
 2 50.99 Madonna
 )");
     EmployeeList employees;
-    ReadEmployeeInfo(emp_input, employees);
+    Bookkeeper bookkeeper;
+    bookkeeper.ReadEmployeeInfo(emp_input, employees);
     vector<Employee> expected1({
            Employee(9, "Jonas Salk", PreciseDecimal::Money(3, 50)),
            Employee(17, "Abraham P. Lincoln", PreciseDecimal::Money(6, 0)),
@@ -28,7 +29,9 @@ TEST_CASE("ReadEmployeeData", "basic") {
 9 10
 17 5
 )");
-    ReadTimesheetData(hours_input, employees);
+    std::vector<TimesheetLine> timesheet_lines;
+    bookkeeper.ReadTimesheetData(hours_input, timesheet_lines);
+    bookkeeper.UpdateEmployees(timesheet_lines, employees);
     vector<Employee> expected2(expected1.begin(), expected1.end());
     expected2[0].AddHoursWorked(10 + 20 + 10);
     expected2[1].AddHoursWorked(40 + 40 + 5);
@@ -36,7 +39,7 @@ TEST_CASE("ReadEmployeeData", "basic") {
     REQUIRE(employees == expected2);
 }
 
-TEST_CASE("ReadTimesheetData_TimesheetLine", "basic") {
+TEST_CASE("Bookkeeper_ReadTimesheetData_TimesheetLine", "basic") {
     using namespace std;
     vector<pair<string, vector<TimesheetLine>>> test_cases({
              pair<string, vector<TimesheetLine>>("", {}),
@@ -61,7 +64,8 @@ TEST_CASE("ReadTimesheetData_TimesheetLine", "basic") {
         istringstream in(content);
         const vector<TimesheetLine>& expected = test_case.second;
         vector<TimesheetLine> actual;
-        ReadTimesheetData(in, actual);
+        Bookkeeper bookkeeper;
+        bookkeeper.ReadTimesheetData(in, actual);
         REQUIRE(expected == actual);
     }
 }
